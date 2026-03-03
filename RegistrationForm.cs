@@ -122,7 +122,7 @@ namespace Skills_International_School_Management_System
 
                     if (rows > 0)
                     {
-                        MessageBox.Show("Registration successful.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("Record Added successful.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         ClearAllTextBoxes(this);
                         PostClearLogic();
                         LoadRegNos();
@@ -142,7 +142,47 @@ namespace Skills_International_School_Management_System
 
         private void Deletebutton4_Click(object sender, System.EventArgs e)
         {
+            
+                string key = comboBox1?.Text ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(key))
+                {
+                    MessageBox.Show("Please select a Reg No to delete.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
 
+                if (!int.TryParse(key, out int regId))
+                {
+                    MessageBox.Show("Selected Reg No is not valid.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                var yesno = MessageBox.Show($"Are you sure you want to delete record Reg No: {regId}?", "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (yesno != DialogResult.Yes) return;
+
+                using (var conn = new SqlConnection(_connectionString))
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = "DELETE FROM Registration WHERE regNo = @regNo";
+                    cmd.Parameters.AddWithValue("@regNo", regId);
+
+                    conn.Open();
+                    int affected = cmd.ExecuteNonQuery();
+                    conn.Close();
+
+                    if (affected > 0)
+                    {
+                        MessageBox.Show("Record deleted successfully.", "Deleted", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        ClearAllTextBoxes(this);
+                        PostClearLogic();
+                        LoadRegNos();
+                    }
+                    else
+                    {
+                        MessageBox.Show("No record found to delete.", "Delete Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+          
         }
 
         private void Updatebutton1_Click(object sender, System.EventArgs e)
@@ -194,7 +234,7 @@ namespace Skills_International_School_Management_System
                         cmd.Parameters.AddWithValue("@contactNo", int.TryParse(contactNo, out int cn) ? (object)cn : DBNull.Value);
 
                     int affected = cmd.ExecuteNonQuery();
-                    MessageBox.Show("Update successful.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Record Update successful.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadRegNos();
                     ClearAllTextBoxes(this);
 
@@ -220,24 +260,27 @@ namespace Skills_International_School_Management_System
         // Recursively clear textboxes inside the given parent control
         private void ClearAllTextBoxes(Control parent)
         {
-            foreach (Control c in parent.Controls)
-            {
-                if (c is TextBox tb)
-                {
-                    tb.Clear();
-                }
-                else if (c.HasChildren)
-                {
-                    ClearAllTextBoxes(c);
-                }
-            }
+            comboBox1.SelectedIndex = -1;
+            comboBox1.Text = string.Empty;
+            textBox1.Clear();
+            textBox2.Clear();
+            dateTimePicker1.Value = DateTime.Today;
+            radioButton2.Checked = false;
+            radioButton1.Checked = false;
+            textBox4.Clear();
+            textBox8.Clear();
+            textBox5.Clear();
+            textBox6.Clear();
+            textBox3.Clear();
+            textBox7.Clear();
+            textBox9.Clear();
+            textBox1.Focus();
         }
 
        
         private void PostClearLogic()
         {
-            try
-            {
+          
                 if (this.comboBox1 != null)
                     this.comboBox1.SelectedIndex = -1;
 
@@ -258,11 +301,6 @@ namespace Skills_International_School_Management_System
                         break;
                     }
                 }
-            }
-            catch
-            {
-               
-            }
         }
 
         private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

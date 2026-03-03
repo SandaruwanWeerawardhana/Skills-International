@@ -9,7 +9,7 @@ namespace Skills_International_School_Management_System
     {
     
         SqlConnection DB_Con = new SqlConnection(
-            @"Data Source=YOUR_PC_NAME\SQLEXPRESS;" +
+            @"Data Source=DESKTOP-T8RBHGC\SQLEXPRESS;" +
             "Initial Catalog=Student;" +
             "Integrated Security=True");
 
@@ -20,7 +20,7 @@ namespace Skills_International_School_Management_System
 
         private void Login_Load(object sender, EventArgs e)
         {
-            //txtun.Focus();
+            textBox1.Focus();
         }
 
 
@@ -95,32 +95,56 @@ namespace Skills_International_School_Management_System
 
         private void button2_Click(object sender, EventArgs e)
         {
+            string username = textBox1.Text.Trim();
+            string password = textBox2.Text.Trim();
+
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            {
+                MessageBox.Show(
+                    "Please enter both Username and Password.",
+                    "Validation",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
             try
             {
-                //string query = "SELECT * FROM Logins WHERE username=@user AND password=@pw";
-                //SqlDataAdapter sda = new SqlDataAdapter(query, DB_Con);
-                //sda.SelectCommand.Parameters.AddWithValue("@user", txtun.Text);
-                //sda.SelectCommand.Parameters.AddWithValue("@pw", txtpw.Text);
+                string query = "SELECT COUNT(*) FROM Logins WHERE username = @user AND password = @pw";
 
-                //DataTable dt = new DataTable();
-                //sda.Fill(dt);
+                using (var conn = new SqlConnection(DB_Con.ConnectionString))
+                using (var cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@user", username);
+                    cmd.Parameters.AddWithValue("@pw", password);
 
-                //if (dt.Rows.Count == 1)
-                //{
-                // Login success - hide this form and open Registration
-                this.Hide();
-                RegistrationForm rf = new RegistrationForm();
-                rf.Show();
-                //}
-                //else
-                //{
-                //    // Login failed - show error message
-                //    MessageBox.Show(
-                //        "Invalid Login Credentials, Please Check User Name and Password then Try Again",
-                //        "Invalid Login Details",
-                //        MessageBoxButtons.OK,
-                //        MessageBoxIcon.Error);
-                //}
+                    conn.Open();
+                    int count = (int)cmd.ExecuteScalar();
+                    conn.Close();
+
+                    if (count == 1)
+                    {
+                        // Login success — open Registration form
+                        this.Hide();
+                        RegistrationForm rf = new RegistrationForm();
+                        rf.Show();
+                        textBox1.Clear();
+                        textBox2.Clear();
+                    }
+                    else
+                    {
+                        // Login failed — inform the user
+                        MessageBox.Show(
+                            "Invalid Login Credentials, Please Check User Name and Password then Try Again.",
+                            "Invalid Login Details",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+
+                        textBox1.Clear();
+                        textBox2.Clear();
+                        textBox1.Focus();
+                    }
+                }
             }
             catch (Exception ex)
             {

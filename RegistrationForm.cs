@@ -90,9 +90,9 @@ namespace Skills_International_School_Management_System
                 string contactNo = textBox9?.Text ?? string.Empty;
 
                 // Basic validation
-                if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName))
+                if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName) || string.IsNullOrWhiteSpace(address) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(mobile) || string.IsNullOrWhiteSpace(nic) || string.IsNullOrWhiteSpace(contactNo))
                 {
-                    MessageBox.Show("Please enter first name and last name.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Please Fill form.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 

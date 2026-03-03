@@ -73,7 +73,6 @@ namespace Skills_International_School_Management_System
 
         private void button2_Click(object sender, System.EventArgs e)
         {
-            // Register button: collect fields and insert into Registration table
             try
             {
                 string regNo = comboBox1?.Text ?? string.Empty;
@@ -148,7 +147,64 @@ namespace Skills_International_School_Management_System
 
         private void Updatebutton1_Click(object sender, System.EventArgs e)
         {
+            try
+            {
+                string key = comboBox1?.Text ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(key))
+                {
+                    MessageBox.Show("Please select a Reg No to update.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
 
+                string firstName = textBox1?.Text ?? string.Empty;
+                string lastName = textBox2?.Text ?? string.Empty;
+                DateTime dateOfBirth = dateTimePicker1?.Value ?? DateTime.Today;
+                string gender = radioButton1 != null && radioButton1.Checked ? radioButton1.Text :
+                                radioButton2 != null && radioButton2.Checked ? radioButton2.Text : string.Empty;
+                string address = textBox4?.Text ?? string.Empty;
+                string mobile = textBox5?.Text ?? string.Empty;
+                string email = textBox8?.Text ?? string.Empty;
+                string homePhone = textBox6?.Text ?? string.Empty;
+                string parentName = textBox3?.Text ?? string.Empty;
+                string nic = textBox7?.Text ?? string.Empty;
+                string contactNo = textBox9?.Text ?? string.Empty;
+
+                using (var conn = new SqlConnection(_connectionString))
+                using (var cmd = conn.CreateCommand())
+                {
+                    conn.Open();
+
+                    cmd.CommandType = CommandType.Text;
+                        // Update by RegNo (string key)
+                    cmd.CommandText = @"UPDATE Registration SET
+                            FirstName=@FirstName, LastName=@LastName, DateofBirth=@DateofBirth, Gender=@Gender,
+                            Address=@Address, MobilePhone=@MobilePhone, Email=@Email, HomePhone=@HomePhone,
+                            ParentName=@ParentName, NIC=@NIC, ContactNo=@ContactNo
+                            WHERE RegNo=@RegNo";
+                    cmd.Parameters.AddWithValue("@RegNo", key);
+                    cmd.Parameters.AddWithValue("@FirstName", (object)firstName ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@LastName", (object)lastName ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@DateofBirth", dateOfBirth);
+                    cmd.Parameters.AddWithValue("@Gender", (object)gender ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Address", (object)address ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@MobilePhone", (object)mobile ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Email", (object)email ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@HomePhone", (object)homePhone ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@ParentName", (object)parentName ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@NIC", (object)nic ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@ContactNo", (object)contactNo ?? DBNull.Value);
+
+                    int affected = cmd.ExecuteNonQuery();
+                    MessageBox.Show("Update successful.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadRegNos();
+                    ClearAllTextBoxes(this);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error updating record: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void radioButton2_CheckedChanged(object sender, System.EventArgs e)
@@ -158,7 +214,6 @@ namespace Skills_International_School_Management_System
 
         private void Clearbutton3_Click(object sender, System.EventArgs e)
         {
-            // Clear all textboxes and perform any additional reset logic
             ClearAllTextBoxes(this);
             PostClearLogic();
         }
@@ -182,7 +237,6 @@ namespace Skills_International_School_Management_System
        
         private void PostClearLogic()
         {
-            // Reset selection controls
             try
             {
                 if (this.comboBox1 != null)
@@ -261,7 +315,6 @@ namespace Skills_International_School_Management_System
                 LoadRegistrationByRegNo(selected);
         }
 
-        // Populate comboBox1 with all Reg Nos (Ids) from the Registration table
         private void LoadRegNos()
         {
           

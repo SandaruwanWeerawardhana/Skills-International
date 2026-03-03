@@ -17,7 +17,7 @@ namespace Skills_International_School_Management_System
 
         private void RegistrationForm_Load(object sender, System.EventArgs e)
         {
-
+            LoadRegNos();
         }
 
         private void groupBox1_Enter(object sender, System.EventArgs e)
@@ -216,7 +216,7 @@ namespace Skills_International_School_Management_System
 
         private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            // Logout: show the login form and hide this registration form
+
             try
             {
                 foreach (Form f in Application.OpenForms)
@@ -254,6 +254,109 @@ namespace Skills_International_School_Management_System
             {
                 Application.Exit();
             }
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string selected = comboBox1.SelectedItem?.ToString();
+            if (!string.IsNullOrEmpty(selected))
+                LoadRegistrationByRegNo(selected);
+        }
+
+        // Populate comboBox1 with all Reg Nos (Ids) from the Registration table
+        private void LoadRegNos()
+        {
+            try
+            {
+                comboBox1.Items.Clear();
+                using (var conn = new SqlConnection(_connectionString))
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT RegNo FROM Registration ORDER BY RegNo";
+                    conn.Open();
+                    using (var rdr = cmd.ExecuteReader())
+                    {
+                        while (rdr.Read())
+                        {
+                            if (!rdr.IsDBNull(0))
+                                comboBox1.Items.Add(rdr.GetValue(0).ToString());
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // Silently ignore if DB is not yet available at design-time or load
+            }
+        }
+
+        // Query the Registration table by Id and fill all form fields
+        private void LoadRegistrationByRegNo(string id)
+        {
+            if (!int.TryParse(id, out int regId)) return;
+
+            try
+            {
+                using (var conn = new SqlConnection(_connectionString))
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM Registration WHERE RegNo = @RegNo";
+                    cmd.Parameters.AddWithValue("@RegNo", regId);
+                    conn.Open();
+                    using (var rdr = cmd.ExecuteReader())
+                    {
+                        if (rdr.Read())
+                            FillFormFromReader(rdr);
+                        else
+                            MessageBox.Show("No record found for Reg No: " + id, "Not Found", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error loading record: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Fill all form controls from a SqlDataReader row
+        private void FillFormFromReader(SqlDataReader rdr)
+        {
+            // Helper: safely read a string column by name
+            string GetStr(string col)
+            {
+                try
+                {
+                    int i = rdr.GetOrdinal(col);
+                    return rdr.IsDBNull(i) ? string.Empty : rdr.GetValue(i).ToString();
+                }
+                catch { return string.Empty; }
+            }
+
+            textBox1.Text  = GetStr("FirstName");
+            textBox2.Text  = GetStr("LastName");
+            textBox4.Text  = GetStr("Address");
+            textBox5.Text  = GetStr("MobilePhone");
+            textBox6.Text  = GetStr("HomePhone");
+            textBox7.Text  = GetStr("NIC");
+            textBox8.Text  = GetStr("Email");
+            textBox3.Text  = GetStr("ParentName");
+            textBox9.Text  = GetStr("ContactNo");
+
+            // Date of Birth
+            try
+            {
+                int di = rdr.GetOrdinal("DateofBirth");
+                if (!rdr.IsDBNull(di))
+                    dateTimePicker1.Value = rdr.GetDateTime(di);
+            }
+            catch { }
+
+            // Gender radio buttons
+            string gender = GetStr("Gender");
+            if (radioButton1 != null)
+                radioButton1.Checked = radioButton1.Text.Equals(gender, StringComparison.OrdinalIgnoreCase);
+            if (radioButton2 != null)
+                radioButton2.Checked = radioButton2.Text.Equals(gender, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

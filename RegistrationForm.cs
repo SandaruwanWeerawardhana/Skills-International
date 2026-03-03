@@ -101,20 +101,20 @@ namespace Skills_International_School_Management_System
                 {
                     cmd.CommandType = CommandType.Text;
                     cmd.CommandText = @"INSERT INTO Registration
-                        (FirstName, LastName, DateofBirth, Gender, Address, MobilePhone, Email, HomePhone, ParentName, NIC, ContactNo)
+                        (firstName, lastName, dateOfBirth, gender, address, mobilePhone, email, homePhone, parentName, nic, contactNo)
                         VALUES
-                        (@FirstName, @LastName, @DateofBirth, @Gender, @Address, @MobilePhone, @Email, @HomePhone, @ParentName, @NIC, @ContactNo)";
-                    cmd.Parameters.AddWithValue("@FirstName", (object)firstName ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("@LastName", (object)lastName ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("@DateofBirth", DateofBirth);
-                    cmd.Parameters.AddWithValue("@Gender", (object)gender ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("@Address", (object)address ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("@MobilePhone", (object)mobile ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("@Email", (object)email ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("@HomePhone", (object)homePhone ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("@ParentName", (object)parentName ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("@NIC", (object)nic ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("@ContactNo", (object)contactNo ?? DBNull.Value);
+                        (@firstName, @lastName, @dateOfBirth, @gender, @address, @mobilePhone, @email, @homePhone, @parentName, @nic, @contactNo)";
+                    cmd.Parameters.AddWithValue("@firstName", string.IsNullOrEmpty(firstName) ? (object)DBNull.Value : firstName);
+                    cmd.Parameters.AddWithValue("@lastName", string.IsNullOrEmpty(lastName) ? (object)DBNull.Value : lastName);
+                    cmd.Parameters.AddWithValue("@dateOfBirth", DateofBirth);
+                    cmd.Parameters.AddWithValue("@gender", string.IsNullOrEmpty(gender) ? (object)DBNull.Value : gender);
+                    cmd.Parameters.AddWithValue("@address", string.IsNullOrEmpty(address) ? (object)DBNull.Value : address);
+                    cmd.Parameters.AddWithValue("@mobilePhone", int.TryParse(mobile, out int mob) ? (object)mob : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@email", string.IsNullOrEmpty(email) ? (object)DBNull.Value : email);
+                    cmd.Parameters.AddWithValue("@homePhone", int.TryParse(homePhone, out int hp) ? (object)hp : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@parentName", string.IsNullOrEmpty(parentName) ? (object)DBNull.Value : parentName);
+                    cmd.Parameters.AddWithValue("@nic", string.IsNullOrEmpty(nic) ? (object)DBNull.Value : nic);
+                    cmd.Parameters.AddWithValue("@contactNo", int.TryParse(contactNo, out int cn) ? (object)cn : DBNull.Value);
 
                     conn.Open();
                     int rows = cmd.ExecuteNonQuery();
@@ -175,24 +175,23 @@ namespace Skills_International_School_Management_System
                     conn.Open();
 
                     cmd.CommandType = CommandType.Text;
-                        // Update by RegNo (string key)
-                    cmd.CommandText = @"UPDATE Registration SET
-                            FirstName=@FirstName, LastName=@LastName, DateofBirth=@DateofBirth, Gender=@Gender,
-                            Address=@Address, MobilePhone=@MobilePhone, Email=@Email, HomePhone=@HomePhone,
-                            ParentName=@ParentName, NIC=@NIC, ContactNo=@ContactNo
-                            WHERE RegNo=@RegNo";
-                    cmd.Parameters.AddWithValue("@RegNo", key);
-                    cmd.Parameters.AddWithValue("@FirstName", (object)firstName ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("@LastName", (object)lastName ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("@DateofBirth", dateOfBirth);
-                    cmd.Parameters.AddWithValue("@Gender", (object)gender ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("@Address", (object)address ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("@MobilePhone", (object)mobile ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("@Email", (object)email ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("@HomePhone", (object)homePhone ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("@ParentName", (object)parentName ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("@NIC", (object)nic ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("@ContactNo", (object)contactNo ?? DBNull.Value);
+                        cmd.CommandText = @"UPDATE Registration SET
+                                firstName=@firstName, lastName=@lastName, dateOfBirth=@dateOfBirth, gender=@gender,
+                                address=@address, mobilePhone=@mobilePhone, email=@email, homePhone=@homePhone,
+                                parentName=@parentName, nic=@nic, contactNo=@contactNo
+                                WHERE regNo=@regNo";
+                        cmd.Parameters.AddWithValue("@regNo", key);
+                        cmd.Parameters.AddWithValue("@firstName", string.IsNullOrEmpty(firstName) ? (object)DBNull.Value : firstName);
+                        cmd.Parameters.AddWithValue("@lastName", string.IsNullOrEmpty(lastName) ? (object)DBNull.Value : lastName);
+                        cmd.Parameters.AddWithValue("@dateOfBirth", dateOfBirth);
+                        cmd.Parameters.AddWithValue("@gender", string.IsNullOrEmpty(gender) ? (object)DBNull.Value : gender);
+                        cmd.Parameters.AddWithValue("@address", string.IsNullOrEmpty(address) ? (object)DBNull.Value : address);
+                        cmd.Parameters.AddWithValue("@mobilePhone", int.TryParse(mobile, out int mob) ? (object)mob : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@email", string.IsNullOrEmpty(email) ? (object)DBNull.Value : email);
+                        cmd.Parameters.AddWithValue("@homePhone", int.TryParse(homePhone, out int hp) ? (object)hp : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@parentName", string.IsNullOrEmpty(parentName) ? (object)DBNull.Value : parentName);
+                        cmd.Parameters.AddWithValue("@nic", string.IsNullOrEmpty(nic) ? (object)DBNull.Value : nic);
+                        cmd.Parameters.AddWithValue("@contactNo", int.TryParse(contactNo, out int cn) ? (object)cn : DBNull.Value);
 
                     int affected = cmd.ExecuteNonQuery();
                     MessageBox.Show("Update successful.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -322,7 +321,7 @@ namespace Skills_International_School_Management_System
                 using (var conn = new SqlConnection(_connectionString))
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT RegNo FROM Registration ORDER BY RegNo";
+                    cmd.CommandText = "SELECT regNo FROM Registration ORDER BY regNo";
                     conn.Open();
                     using (var rdr = cmd.ExecuteReader())
                     {
@@ -345,8 +344,8 @@ namespace Skills_International_School_Management_System
                 using (var conn = new SqlConnection(_connectionString))
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT * FROM Registration WHERE RegNo = @RegNo";
-                    cmd.Parameters.AddWithValue("@RegNo", regId);
+                    cmd.CommandText = "SELECT * FROM Registration WHERE regNo = @regNo";
+                    cmd.Parameters.AddWithValue("@regNo", regId);
                     conn.Open();
                     using (var rdr = cmd.ExecuteReader())
                     {
@@ -376,21 +375,21 @@ namespace Skills_International_School_Management_System
                 catch { return string.Empty; }
             }
 
-            textBox1.Text  = GetStr("FirstName");
-            textBox2.Text  = GetStr("LastName");
-            textBox4.Text  = GetStr("Address");
-            textBox5.Text  = GetStr("MobilePhone");
-            textBox6.Text  = GetStr("HomePhone");
-            textBox7.Text  = GetStr("NIC");
-            textBox8.Text  = GetStr("Email");
-            textBox3.Text  = GetStr("ParentName");
-            textBox9.Text  = GetStr("ContactNo");
+            textBox1.Text  = GetStr("firstName");
+            textBox2.Text  = GetStr("lastName");
+            textBox4.Text  = GetStr("address");
+            textBox5.Text  = GetStr("mobilePhone");
+            textBox6.Text  = GetStr("homePhone");
+            textBox7.Text  = GetStr("nic");
+            textBox8.Text  = GetStr("email");
+            textBox3.Text  = GetStr("parentName");
+            textBox9.Text  = GetStr("contactNo");
 
-            int di = rdr.GetOrdinal("DateofBirth");
-                if (!rdr.IsDBNull(di))
-                    dateTimePicker1.Value = rdr.GetDateTime(di);
-      
-            string gender = GetStr("Gender");
+            int di = rdr.GetOrdinal("dateOfBirth");
+            if (!rdr.IsDBNull(di))
+                dateTimePicker1.Value = rdr.GetDateTime(di);
+
+            string gender = GetStr("gender");
             if (radioButton1 != null)
                 radioButton1.Checked = radioButton1.Text.Equals(gender, StringComparison.OrdinalIgnoreCase);
             if (radioButton2 != null)

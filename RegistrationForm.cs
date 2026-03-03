@@ -40,10 +40,6 @@ namespace Skills_International_School_Management_System
 
         }
 
-        private void label3_Click(object sender, System.EventArgs e)
-        {
-
-        }
 
         private void label8_Click(object sender, System.EventArgs e)
         {
@@ -130,6 +126,8 @@ namespace Skills_International_School_Management_System
                         MessageBox.Show("Registration successful.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         ClearAllTextBoxes(this);
                         PostClearLogic();
+                        LoadRegNos();
+
                     }
                     else
                     {
@@ -266,8 +264,7 @@ namespace Skills_International_School_Management_System
         // Populate comboBox1 with all Reg Nos (Ids) from the Registration table
         private void LoadRegNos()
         {
-            try
-            {
+          
                 comboBox1.Items.Clear();
                 using (var conn = new SqlConnection(_connectionString))
                 using (var cmd = conn.CreateCommand())
@@ -283,14 +280,9 @@ namespace Skills_International_School_Management_System
                         }
                     }
                 }
-            }
-            catch
-            {
-                // Silently ignore if DB is not yet available at design-time or load
-            }
+           
         }
 
-        // Query the Registration table by Id and fill all form fields
         private void LoadRegistrationByRegNo(string id)
         {
             if (!int.TryParse(id, out int regId)) return;
@@ -318,7 +310,6 @@ namespace Skills_International_School_Management_System
             }
         }
 
-        // Fill all form controls from a SqlDataReader row
         private void FillFormFromReader(SqlDataReader rdr)
         {
             // Helper: safely read a string column by name
@@ -342,16 +333,10 @@ namespace Skills_International_School_Management_System
             textBox3.Text  = GetStr("ParentName");
             textBox9.Text  = GetStr("ContactNo");
 
-            // Date of Birth
-            try
-            {
-                int di = rdr.GetOrdinal("DateofBirth");
+            int di = rdr.GetOrdinal("DateofBirth");
                 if (!rdr.IsDBNull(di))
                     dateTimePicker1.Value = rdr.GetDateTime(di);
-            }
-            catch { }
-
-            // Gender radio buttons
+      
             string gender = GetStr("Gender");
             if (radioButton1 != null)
                 radioButton1.Checked = radioButton1.Text.Equals(gender, StringComparison.OrdinalIgnoreCase);

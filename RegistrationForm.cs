@@ -152,7 +152,7 @@ namespace Skills_International_School_Management_System
 
                 if (!int.TryParse(key, out int regId))
                 {
-                    MessageBox.Show("Selected Reg No is not valid.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("InComplete or Invalide data.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 

@@ -1,0 +1,110 @@
+{\rtf1\ansi\deff0
+{\fonttbl{\f0\fswiss Arial;}{\f1\fmodern Courier New;}}
+\fs24\b Project: Skills International School Management System\b0\par
+\par
+\b 1. Project Overview\b0\par
+This document describes the deliverables required for the project, provides GUI and database design guidance, code snippets to connect the system to SQL Server, and a submission checklist. Include screenshots of each form and code snippets in the final Microsoft Word submission.
+\par
+\b 2. Requirements (from instructor)\b0\par
+1. Design the software system according to the given instructions.\par
+2. Use appropriate fonts, colors, and images for Frontend (GUI design).\par
+3. System must have a database and be properly connected (SQL Server).\par
+4. Database must contain at least one table (see sample structure below).\par
+5. Test the software and submit before the deadline.\par
+6. Create a Microsoft Word Document including screenshots of forms and code snippets.\par
+7. Include full project brief in the document.
+\par
+\b 3. GUI Design Guidance\b0\par
+- Recommended fonts: "Segoe UI" (UI), "Arial" (fallback).\par
+- Sizes: Labels 10-12pt, Inputs 10-12pt, Form title 14-16pt.\par
+- Colors: Use a neutral background (e.g., #F5F7FA), primary accent (e.g., #2B6CB0 - blue), success (#2F855A - green), error (#E53E3E - red).\par
+- Images: Use school logo at top-left of main forms (PNG with transparency).\par
+- Accessibility: Ensure contrast ratio and keyboard navigation for controls.
+\par
+\b 4. Database Design (SQL Server)\b0\par
+- Use SQL Server Management Studio (SSMS) to create the database (example name: `SkillsDB`).\par
+- Example table: `Students` (this is the "minimum one table" required).\par
+\b SQL script to create table:\b0\par
+\f1\fs20
+CREATE TABLE Students (\par
+    Id INT IDENTITY(1,1) PRIMARY KEY,\par
+    AdmissionNo VARCHAR(50) NOT NULL UNIQUE,\par
+    FirstName NVARCHAR(100) NOT NULL,\par
+    LastName NVARCHAR(100) NULL,\par
+    DOB DATE NULL,\par
+    Gender VARCHAR(10) NULL,\par
+    Class VARCHAR(50) NULL,\par
+    Email VARCHAR(100) NULL,\par
+    Phone VARCHAR(20) NULL,\par
+    Address NVARCHAR(255) NULL,\par
+    CreatedAt DATETIME DEFAULT GETDATE()\par
+);\par
+\f0\fs24
+\par
+\b Connection string examples (for .NET Framework 4.7.2)\b0\par
+- Windows Authentication:\par
+`Data Source=SERVERNAME;Initial Catalog=SkillsDB;Integrated Security=True;`\par
+- SQL Server Authentication:\par
+`Data Source=SERVERNAME;Initial Catalog=SkillsDB;User ID=sa;Password=YourPassword;`\par
+\par
+\b 5. C# code snippets\b0\par
+\f1\fs20
+// Example: open connection and query students\par
+using System.Data.SqlClient;\par
+string connStr = "Data Source=SERVERNAME;Initial Catalog=SkillsDB;Integrated Security=True;";\par
+using (var conn = new SqlConnection(connStr))\par
+{\par
+    conn.Open();\par
+    using (var cmd = new SqlCommand("SELECT TOP 10 * FROM Students", conn))\par
+    using (var reader = cmd.ExecuteReader())\par
+    {\par
+        while (reader.Read())\par
+        {\par
+            // read fields: reader["FirstName"].ToString();\par
+        }\par
+    }\par
+}\par
+\par
+// Example: simple login check against a Users table\par
+string loginQuery = "SELECT COUNT(1) FROM Users WHERE Username=@u AND PasswordHash=@p";\par
+using (var cmd = new SqlCommand(loginQuery, conn))\par
+{\par
+    cmd.Parameters.AddWithValue("@u", username);\par
+    cmd.Parameters.AddWithValue("@p", passwordHash);\par
+    int count = Convert.ToInt32(cmd.ExecuteScalar());\par
+    bool success = (count > 0);\par
+}\par
+\f0\fs24
+\par
+\b 6. Testing checklist\b0\par
+- Verify DB connection strings and connectivity in SSMS.\par
+- Test create/read/update/delete (CRUD) operations for at least one table.\par
+- Test login and registration workflows (valid and invalid inputs).\par
+- Validate UI responsiveness and control tab order.\par
+\par
+\b 7. Preparing the Word submission\b0\par
+1. Open Microsoft Word and create a new document.\par
+2. Create a cover page with project title, your name, date, and brief description.\par
+3. For each form in the system (e.g., Login, Registration, Main Dashboard):\par
+   - Insert a screenshot (Insert > Pictures).\par
+   - Provide a short description of the form purpose.\par
+   - Paste the relevant code snippet for form logic (use `Courier New` font).\par
+4. Include the SQL script used to create the database (as a code snippet).\par
+5. Add a section for testing results and any known issues.\par
+6. Add the project brief and submission checklist.\par
+7. Save the Word document as `SkillsProject_Report.docx` and include it in submission.
+\par
+\b 8. Project brief (example summary to include)\b0\par
+- Objective: Build a Windows Forms application for managing student records for Skills International School.\par
+- Key features: User authentication (Login), Student registration, Student list and search, Basic reporting/print.\par
+- Technologies: .NET Framework 4.7.2, Windows Forms, SQL Server (database), Visual Studio (IDE).\par
+- Deliverables: Source code, database script (.sql), `SkillsProject_Report.docx` with screenshots and code snippets.
+\par
+\b 9. Submission checklist\b0\par
+- [ ] Source code (complete project folder).\par
+- [ ] SQL script file (`CreateDatabase.sql`).\par
+- [ ] `SkillsProject_Report.docx` with screenshots and code snippets.\par
+- [ ] All forms tested (screenshots attached).\par
+\par
+\b End of document\b0\par
+}

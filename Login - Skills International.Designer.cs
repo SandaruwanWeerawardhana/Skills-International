@@ -78,7 +78,7 @@
             this.label1.TabIndex = 5;
             this.label1.Text = "Skill International";
             this.label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.label1.Click += new System.EventHandler(this.label1_Click);
+
             // 
             // exit
             // 
@@ -139,7 +139,6 @@
             this.textBox2.Size = new System.Drawing.Size(185, 22);
             this.textBox2.UseSystemPasswordChar = true;
             this.textBox2.TabIndex = 3;
-            this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
             // textBox1
             // 
@@ -165,7 +164,6 @@
             this.label2.Size = new System.Drawing.Size(70, 16);
             this.label2.TabIndex = 0;
             this.label2.Text = "Username";
-            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // pictureBox1
             // 

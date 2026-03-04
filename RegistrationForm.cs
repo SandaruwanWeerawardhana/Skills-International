@@ -20,57 +20,6 @@ namespace Skills_International_School_Management_System
             LoadRegNos();
         }
 
-        private void groupBox1_Enter(object sender, System.EventArgs e)
-        {
-
-        }
-
-        private void label7_Click(object sender, System.EventArgs e)
-        {
-
-        }
-
-        private void label4_Click(object sender, System.EventArgs e)
-        {
-
-        }
-
-        private void label10_Click(object sender, System.EventArgs e)
-        {
-
-        }
-
-
-        private void label8_Click(object sender, System.EventArgs e)
-        {
-
-        }
-
-        private void DateofBirthlabel9_Click(object sender, System.EventArgs e)
-        {
-
-        }
-
-        private void textBox1_TextChanged(object sender, System.EventArgs e)
-        {
-
-        }
-
-        private void HomePhonelabel11_Click(object sender, System.EventArgs e)
-        {
-
-        }
-
-        private void textBox3_TextChanged(object sender, System.EventArgs e)
-        {
-
-        }
-
-        private void textBox7_TextChanged(object sender, System.EventArgs e)
-        {
-
-        }
-
         private void button2_Click(object sender, System.EventArgs e)
         {
             try
@@ -244,11 +193,6 @@ namespace Skills_International_School_Management_System
             {
                 MessageBox.Show("Error updating record: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-
-        private void radioButton2_CheckedChanged(object sender, System.EventArgs e)
-        {
-
         }
 
         private void Clearbutton3_Click(object sender, System.EventArgs e)

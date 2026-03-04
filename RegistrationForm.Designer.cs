@@ -89,7 +89,7 @@ namespace Skills_International_School_Management_System
             this.StudentRegistration.TabIndex = 7;
             this.StudentRegistration.TabStop = false;
             this.StudentRegistration.Text = "Student Registration";
-            this.StudentRegistration.Enter += new System.EventHandler(this.groupBox1_Enter);
+            
             // 
             // comboBox1
             // 
@@ -185,7 +185,7 @@ namespace Skills_International_School_Management_System
             this.textBox7.Name = "textBox7";
             this.textBox7.Size = new System.Drawing.Size(131, 20);
             this.textBox7.TabIndex = 13;
-            this.textBox7.TextChanged += new System.EventHandler(this.textBox7_TextChanged);
+           
             // 
             // ContactNolabel14
             // 
@@ -220,7 +220,7 @@ namespace Skills_International_School_Management_System
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(287, 20);
             this.textBox3.TabIndex = 12;
-            this.textBox3.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
+            
             // 
             // ContactDetails
             // 
@@ -276,7 +276,7 @@ namespace Skills_International_School_Management_System
             this.HomePhonelabel11.Size = new System.Drawing.Size(69, 13);
             this.HomePhonelabel11.TabIndex = 8;
             this.HomePhonelabel11.Text = "Home Phone";
-            this.HomePhonelabel11.Click += new System.EventHandler(this.HomePhonelabel11_Click);
+            
             // 
             // Emaillabel10
             // 
@@ -286,7 +286,7 @@ namespace Skills_International_School_Management_System
             this.Emaillabel10.Size = new System.Drawing.Size(32, 13);
             this.Emaillabel10.TabIndex = 7;
             this.Emaillabel10.Text = "Email";
-            this.Emaillabel10.Click += new System.EventHandler(this.label10_Click);
+            
             // 
             // MobilePhonelabel9
             // 
@@ -296,7 +296,7 @@ namespace Skills_International_School_Management_System
             this.MobilePhonelabel9.Size = new System.Drawing.Size(72, 13);
             this.MobilePhonelabel9.TabIndex = 6;
             this.MobilePhonelabel9.Text = "Mobile Phone";
-            this.MobilePhonelabel9.Click += new System.EventHandler(this.DateofBirthlabel9_Click);
+            
             // 
             // Addresslabel8
             // 
@@ -306,7 +306,7 @@ namespace Skills_International_School_Management_System
             this.Addresslabel8.Size = new System.Drawing.Size(45, 13);
             this.Addresslabel8.TabIndex = 5;
             this.Addresslabel8.Text = "Address";
-            this.Addresslabel8.Click += new System.EventHandler(this.label8_Click);
+            
             // 
             // BasicDetails
             // 
@@ -343,7 +343,7 @@ namespace Skills_International_School_Management_System
             this.radioButton2.TabStop = true;
             this.radioButton2.Text = "Male";
             this.radioButton2.UseVisualStyleBackColor = true;
-            this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
+            
             // 
             // radioButton1
             // 
@@ -369,7 +369,7 @@ namespace Skills_International_School_Management_System
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(287, 20);
             this.textBox1.TabIndex = 10;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            
             // 
             // label7
             // 
@@ -379,7 +379,7 @@ namespace Skills_International_School_Management_System
             this.label7.Size = new System.Drawing.Size(66, 13);
             this.label7.TabIndex = 9;
             this.label7.Text = "Date of Birth";
-            this.label7.Click += new System.EventHandler(this.label7_Click);
+            
             // 
             // LastNamelabel5
             // 
@@ -398,7 +398,7 @@ namespace Skills_International_School_Management_System
             this.Genderlabel4.Size = new System.Drawing.Size(42, 13);
             this.Genderlabel4.TabIndex = 6;
             this.Genderlabel4.Text = "Gender";
-            this.Genderlabel4.Click += new System.EventHandler(this.label4_Click);
+            
             // 
             // FirstNamelabel2
             // 

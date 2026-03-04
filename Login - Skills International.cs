@@ -50,12 +50,6 @@ namespace Skills_International_School_Management_System
               
             }
         }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
    
         private void button3_Click(object sender, EventArgs e)
         {
@@ -73,11 +67,6 @@ namespace Skills_International_School_Management_System
             {
               
             }
-
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
 
         }
 

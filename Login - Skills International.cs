@@ -23,8 +23,6 @@ namespace Skills_International_School_Management_System
             textBox1.Focus();
         }
 
-
-
         private void btnclear_Click(object sender, EventArgs e)
         {
             textBox1.Clear();  // Username
@@ -67,11 +65,6 @@ namespace Skills_International_School_Management_System
             {
               
             }
-
-        }
-
-        private void textBox2_TextChanged(object sender, EventArgs e)
-        {
 
         }
 

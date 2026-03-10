@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Data;
-using System.Data.SqlClient;
 using System.Windows.Forms;
+using Skills_International_School_Management_System.Database;
 
 namespace Skills_International_School_Management_System
 {
     public partial class Login : Form
     {
-    
-        SqlConnection DB_Con = new SqlConnection(
-            @"Data Source=DESKTOP-T8RBHGC\SQLEXPRESS;" +
-            "Initial Catalog=Student;" +
-            "Integrated Security=True");
 
         public Login()
         {
@@ -92,40 +86,25 @@ namespace Skills_International_School_Management_System
 
             try
             {
-                string query = "SELECT COUNT(*) FROM Logins WHERE username = @user AND password = @pw";
-
-                using (var conn = new SqlConnection(DB_Con.ConnectionString))
-                using (var cmd = new SqlCommand(query, conn))
+                if (DbHelper.ValidateLogin(username, password))
                 {
-                    cmd.Parameters.AddWithValue("@user", username);
-                    cmd.Parameters.AddWithValue("@pw", password);
+                    this.Hide();
+                    RegistrationForm rf = new RegistrationForm();
+                    rf.Show();
+                    textBox1.Clear();
+                    textBox2.Clear();
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "Invalid Login Credentials, Please Check User Name and Password then Try Again.",
+                        "Invalid Login Details",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
 
-                    conn.Open();
-                    int count = (int)cmd.ExecuteScalar();
-                    conn.Close();
-
-                    if (count == 1)
-                    {
-                        // Login success — open Registration form
-                        this.Hide();
-                        RegistrationForm rf = new RegistrationForm();
-                        rf.Show();
-                        textBox1.Clear();
-                        textBox2.Clear();
-                    }
-                    else
-                    {
-                        // Login failed — inform the user
-                        MessageBox.Show(
-                            "Invalid Login Credentials, Please Check User Name and Password then Try Again.",
-                            "Invalid Login Details",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
-
-                        textBox1.Clear();
-                        textBox2.Clear();
-                        textBox1.Focus();
-                    }
+                    textBox1.Clear();
+                    textBox2.Clear();
+                    textBox1.Focus();
                 }
             }
             catch (Exception ex)

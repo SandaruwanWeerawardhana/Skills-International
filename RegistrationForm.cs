@@ -1,14 +1,12 @@
 using System;
-using System.Data;
-using System.Data.SqlClient;
 using System.Windows.Forms;
+using Skills_International_School_Management_System.Database;
+using Skills_International_School_Management_System.Database.Models;
 
 namespace Skills_International_School_Management_System
 {
     public partial class RegistrationForm : Form
     {
-        private readonly string _connectionString =
-            @"Data Source=DESKTOP-T8RBHGC\SQLEXPRESS;Initial Catalog=Student;Integrated Security=True";
 
         public RegistrationForm()
         {
@@ -24,63 +22,19 @@ namespace Skills_International_School_Management_System
         {
             try
             {
-                string regNo = comboBox1?.Text ?? string.Empty;
-                string firstName = textBox1?.Text ?? string.Empty;
-                string lastName = textBox2?.Text ?? string.Empty;
-                DateTime DateofBirth = dateTimePicker1?.Value ?? DateTime.Today;
-                string gender = radioButton1 != null && radioButton1.Checked ? radioButton1.Text :
-                                radioButton2 != null && radioButton2.Checked ? radioButton2.Text : string.Empty;
-                string address = textBox4?.Text ?? string.Empty;
-                string mobile = textBox5?.Text ?? string.Empty;
-                string email = textBox8?.Text ?? string.Empty;
-                string homePhone = textBox6?.Text ?? string.Empty;
-                string parentName = textBox3?.Text ?? string.Empty;
-                string nic = textBox7?.Text ?? string.Empty;
-                string contactNo = textBox9?.Text ?? string.Empty;
+                var s = BuildStudentRecordFromForm();
+                if (s == null) return;
 
-                // Basic validation
-                if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName) || string.IsNullOrWhiteSpace(address) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(mobile) || string.IsNullOrWhiteSpace(nic) || string.IsNullOrWhiteSpace(contactNo))
+                if (DbHelper.InsertStudent(s))
                 {
-                    MessageBox.Show("Please Fill form.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
+                    MessageBox.Show("Record Added successful.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ClearAllTextBoxes(this);
+                    PostClearLogic();
+                    LoadRegNos();
                 }
-
-                using (var conn = new SqlConnection(_connectionString))
-                using (var cmd = conn.CreateCommand())
+                else
                 {
-                    cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = @"INSERT INTO Registration
-                        (firstName, lastName, dateOfBirth, gender, address, mobilePhone, email, homePhone, parentName, nic, contactNo)
-                        VALUES
-                        (@firstName, @lastName, @dateOfBirth, @gender, @address, @mobilePhone, @email, @homePhone, @parentName, @nic, @contactNo)";
-                    cmd.Parameters.AddWithValue("@firstName", string.IsNullOrEmpty(firstName) ? (object)DBNull.Value : firstName);
-                    cmd.Parameters.AddWithValue("@lastName", string.IsNullOrEmpty(lastName) ? (object)DBNull.Value : lastName);
-                    cmd.Parameters.AddWithValue("@dateOfBirth", DateofBirth);
-                    cmd.Parameters.AddWithValue("@gender", string.IsNullOrEmpty(gender) ? (object)DBNull.Value : gender);
-                    cmd.Parameters.AddWithValue("@address", string.IsNullOrEmpty(address) ? (object)DBNull.Value : address);
-                    cmd.Parameters.AddWithValue("@mobilePhone", int.TryParse(mobile, out int mob) ? (object)mob : DBNull.Value);
-                    cmd.Parameters.AddWithValue("@email", string.IsNullOrEmpty(email) ? (object)DBNull.Value : email);
-                    cmd.Parameters.AddWithValue("@homePhone", int.TryParse(homePhone, out int hp) ? (object)hp : DBNull.Value);
-                    cmd.Parameters.AddWithValue("@parentName", string.IsNullOrEmpty(parentName) ? (object)DBNull.Value : parentName);
-                    cmd.Parameters.AddWithValue("@nic", string.IsNullOrEmpty(nic) ? (object)DBNull.Value : nic);
-                    cmd.Parameters.AddWithValue("@contactNo", int.TryParse(contactNo, out int cn) ? (object)cn : DBNull.Value);
-
-                    conn.Open();
-                    int rows = cmd.ExecuteNonQuery();
-                    conn.Close();
-
-                    if (rows > 0)
-                    {
-                        MessageBox.Show("Record Added successful.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        ClearAllTextBoxes(this);
-                        PostClearLogic();
-                        LoadRegNos();
-
-                    }
-                    else
-                    {
-                        MessageBox.Show("No rows were inserted. Check database and try again.", "Insert Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
+                    MessageBox.Show("No rows were inserted. Check database and try again.", "Insert Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
             catch (Exception ex)
@@ -91,47 +45,33 @@ namespace Skills_International_School_Management_System
 
         private void Deletebutton4_Click(object sender, System.EventArgs e)
         {
-            
-                string key = comboBox1?.Text ?? string.Empty;
-                if (string.IsNullOrWhiteSpace(key))
-                {
-                    MessageBox.Show("Please select a Reg No to delete.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
+            string key = comboBox1?.Text ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                MessageBox.Show("Please select a Reg No to delete.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
-                if (!int.TryParse(key, out int regId))
-                {
-                    MessageBox.Show("InComplete or Invalide data.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
+            if (!int.TryParse(key, out int regId))
+            {
+                MessageBox.Show("InComplete or Invalide data.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
-                var yesno = MessageBox.Show($"Are you sure you want to delete record Reg No: {regId}?", "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (yesno != DialogResult.Yes) return;
+            var yesno = MessageBox.Show($"Are you sure you want to delete record Reg No: {regId}?", "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (yesno != DialogResult.Yes) return;
 
-                using (var conn = new SqlConnection(_connectionString))
-                using (var cmd = conn.CreateCommand())
-                {
-                    cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = "DELETE FROM Registration WHERE regNo = @regNo";
-                    cmd.Parameters.AddWithValue("@regNo", regId);
-
-                    conn.Open();
-                    int affected = cmd.ExecuteNonQuery();
-                    conn.Close();
-
-                    if (affected > 0)
-                    {
-                        MessageBox.Show("Record deleted successfully.", "Deleted", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        ClearAllTextBoxes(this);
-                        PostClearLogic();
-                        LoadRegNos();
-                    }
-                    else
-                    {
-                        MessageBox.Show("No record found to delete.", "Delete Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
-                }
-          
+            if (DbHelper.DeleteStudent(regId))
+            {
+                MessageBox.Show("Record deleted successfully.", "Deleted", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ClearAllTextBoxes(this);
+                PostClearLogic();
+                LoadRegNos();
+            }
+            else
+            {
+                MessageBox.Show("No record found to delete.", "Delete Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void Updatebutton1_Click(object sender, System.EventArgs e)
@@ -145,49 +85,20 @@ namespace Skills_International_School_Management_System
                     return;
                 }
 
-                string firstName = textBox1?.Text ?? string.Empty;
-                string lastName = textBox2?.Text ?? string.Empty;
-                DateTime dateOfBirth = dateTimePicker1?.Value ?? DateTime.Today;
-                string gender = radioButton1 != null && radioButton1.Checked ? radioButton1.Text :
-                                radioButton2 != null && radioButton2.Checked ? radioButton2.Text : string.Empty;
-                string address = textBox4?.Text ?? string.Empty;
-                string mobile = textBox5?.Text ?? string.Empty;
-                string email = textBox8?.Text ?? string.Empty;
-                string homePhone = textBox6?.Text ?? string.Empty;
-                string parentName = textBox3?.Text ?? string.Empty;
-                string nic = textBox7?.Text ?? string.Empty;
-                string contactNo = textBox9?.Text ?? string.Empty;
-
-                using (var conn = new SqlConnection(_connectionString))
-                using (var cmd = conn.CreateCommand())
+                if (!int.TryParse(key, out int regId))
                 {
-                    conn.Open();
-
-                    cmd.CommandType = CommandType.Text;
-                        cmd.CommandText = @"UPDATE Registration SET
-                                firstName=@firstName, lastName=@lastName, dateOfBirth=@dateOfBirth, gender=@gender,
-                                address=@address, mobilePhone=@mobilePhone, email=@email, homePhone=@homePhone,
-                                parentName=@parentName, nic=@nic, contactNo=@contactNo
-                                WHERE regNo=@regNo";
-                        cmd.Parameters.AddWithValue("@regNo", key);
-                        cmd.Parameters.AddWithValue("@firstName", string.IsNullOrEmpty(firstName) ? (object)DBNull.Value : firstName);
-                        cmd.Parameters.AddWithValue("@lastName", string.IsNullOrEmpty(lastName) ? (object)DBNull.Value : lastName);
-                        cmd.Parameters.AddWithValue("@dateOfBirth", dateOfBirth);
-                        cmd.Parameters.AddWithValue("@gender", string.IsNullOrEmpty(gender) ? (object)DBNull.Value : gender);
-                        cmd.Parameters.AddWithValue("@address", string.IsNullOrEmpty(address) ? (object)DBNull.Value : address);
-                        cmd.Parameters.AddWithValue("@mobilePhone", int.TryParse(mobile, out int mob) ? (object)mob : DBNull.Value);
-                        cmd.Parameters.AddWithValue("@email", string.IsNullOrEmpty(email) ? (object)DBNull.Value : email);
-                        cmd.Parameters.AddWithValue("@homePhone", int.TryParse(homePhone, out int hp) ? (object)hp : DBNull.Value);
-                        cmd.Parameters.AddWithValue("@parentName", string.IsNullOrEmpty(parentName) ? (object)DBNull.Value : parentName);
-                        cmd.Parameters.AddWithValue("@nic", string.IsNullOrEmpty(nic) ? (object)DBNull.Value : nic);
-                        cmd.Parameters.AddWithValue("@contactNo", int.TryParse(contactNo, out int cn) ? (object)cn : DBNull.Value);
-
-                    int affected = cmd.ExecuteNonQuery();
-                    MessageBox.Show("Record Update successful.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    LoadRegNos();
-                    ClearAllTextBoxes(this);
-
+                    MessageBox.Show("InComplete or Invalide data.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
                 }
+
+                var s = BuildStudentRecordFromForm();
+                if (s == null) return;
+
+                s.RegNo = regId;
+                DbHelper.UpdateStudent(s);
+                MessageBox.Show("Record Update successful.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LoadRegNos();
+                ClearAllTextBoxes(this);
             }
             catch (Exception ex)
             {
@@ -298,45 +209,21 @@ namespace Skills_International_School_Management_System
 
         private void LoadRegNos()
         {
-          
-                comboBox1.Items.Clear();
-                using (var conn = new SqlConnection(_connectionString))
-                using (var cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = "SELECT regNo FROM Registration ORDER BY regNo";
-                    conn.Open();
-                    using (var rdr = cmd.ExecuteReader())
-                    {
-                        while (rdr.Read())
-                        {
-                            if (!rdr.IsDBNull(0))
-                                comboBox1.Items.Add(rdr.GetValue(0).ToString());
-                        }
-                    }
-                }
-           
+            comboBox1.Items.Clear();
+            foreach (var regNo in DbHelper.GetAllRegNos())
+                comboBox1.Items.Add(regNo);
         }
 
         private void LoadRegistrationByRegNo(string id)
         {
             if (!int.TryParse(id, out int regId)) return;
-
             try
             {
-                using (var conn = new SqlConnection(_connectionString))
-                using (var cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = "SELECT * FROM Registration WHERE regNo = @regNo";
-                    cmd.Parameters.AddWithValue("@regNo", regId);
-                    conn.Open();
-                    using (var rdr = cmd.ExecuteReader())
-                    {
-                        if (rdr.Read())
-                            FillFormFromReader(rdr);
-                        else
-                            MessageBox.Show("No record found for Reg No: " + id, "Not Found", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                }
+                var s = DbHelper.GetByRegNo(regId);
+                if (s != null)
+                    FillFormFromRecord(s);
+                else
+                    MessageBox.Show("No record found for Reg No: " + id, "Not Found", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
@@ -344,38 +231,64 @@ namespace Skills_International_School_Management_System
             }
         }
 
-        private void FillFormFromReader(SqlDataReader rdr)
+        private StudentRecord BuildStudentRecordFromForm()
         {
-            // Helper: safely read a string column by name
-            string GetStr(string col)
+            string firstName  = textBox1?.Text ?? string.Empty;
+            string lastName   = textBox2?.Text ?? string.Empty;
+            string gender     = radioButton1 != null && radioButton1.Checked ? radioButton1.Text :
+                                radioButton2 != null && radioButton2.Checked ? radioButton2.Text : string.Empty;
+            string address    = textBox4?.Text ?? string.Empty;
+            string mobile     = textBox5?.Text ?? string.Empty;
+            string email      = textBox8?.Text ?? string.Empty;
+            string homePhone  = textBox6?.Text ?? string.Empty;
+            string parentName = textBox3?.Text ?? string.Empty;
+            string nic        = textBox7?.Text ?? string.Empty;
+            string contactNo  = textBox9?.Text ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName) ||
+                string.IsNullOrWhiteSpace(address)   || string.IsNullOrWhiteSpace(email)    ||
+                string.IsNullOrWhiteSpace(mobile)    || string.IsNullOrWhiteSpace(nic)      ||
+                string.IsNullOrWhiteSpace(contactNo))
             {
-                try
-                {
-                    int i = rdr.GetOrdinal(col);
-                    return rdr.IsDBNull(i) ? string.Empty : rdr.GetValue(i).ToString();
-                }
-                catch { return string.Empty; }
+                MessageBox.Show("Please Fill form.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return null;
             }
 
-            textBox1.Text  = GetStr("firstName");
-            textBox2.Text  = GetStr("lastName");
-            textBox4.Text  = GetStr("address");
-            textBox5.Text  = GetStr("mobilePhone");
-            textBox6.Text  = GetStr("homePhone");
-            textBox7.Text  = GetStr("nic");
-            textBox8.Text  = GetStr("email");
-            textBox3.Text  = GetStr("parentName");
-            textBox9.Text  = GetStr("contactNo");
+            return new StudentRecord
+            {
+                FirstName   = firstName,
+                LastName    = lastName,
+                DateOfBirth = dateTimePicker1?.Value ?? DateTime.Today,
+                Gender      = gender,
+                Address     = address,
+                MobilePhone = mobile,
+                Email       = email,
+                HomePhone   = homePhone,
+                ParentName  = parentName,
+                Nic         = nic,
+                ContactNo   = contactNo
+            };
+        }
 
-            int di = rdr.GetOrdinal("dateOfBirth");
-            if (!rdr.IsDBNull(di))
-                dateTimePicker1.Value = rdr.GetDateTime(di);
+        private void FillFormFromRecord(StudentRecord s)
+        {
+            textBox1.Text = s.FirstName;
+            textBox2.Text = s.LastName;
+            textBox4.Text = s.Address;
+            textBox5.Text = s.MobilePhone;
+            textBox6.Text = s.HomePhone;
+            textBox7.Text = s.Nic;
+            textBox8.Text = s.Email;
+            textBox3.Text = s.ParentName;
+            textBox9.Text = s.ContactNo;
 
-            string gender = GetStr("gender");
+            if (s.DateOfBirth.HasValue)
+                dateTimePicker1.Value = s.DateOfBirth.Value;
+
             if (radioButton1 != null)
-                radioButton1.Checked = radioButton1.Text.Equals(gender, StringComparison.OrdinalIgnoreCase);
+                radioButton1.Checked = radioButton1.Text.Equals(s.Gender, StringComparison.OrdinalIgnoreCase);
             if (radioButton2 != null)
-                radioButton2.Checked = radioButton2.Text.Equals(gender, StringComparison.OrdinalIgnoreCase);
+                radioButton2.Checked = radioButton2.Text.Equals(s.Gender, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

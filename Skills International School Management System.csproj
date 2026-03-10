@@ -48,6 +48,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Database\DbHelper.cs" />
+    <Compile Include="Database\Models\LoginRecord.cs" />
+    <Compile Include="Database\Models\StudentRecord.cs" />
     <Compile Include="Login - Skills International.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -62,6 +65,7 @@
     <Compile Include="RegistrationForm.Designer.cs">
       <DependentUpon>RegistrationForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Tests\DbHelperIntegrationTests.cs" />
     <EmbeddedResource Include="Login - Skills International.resx">
       <DependentUpon>Login - Skills International.cs</DependentUpon>
     </EmbeddedResource>
@@ -77,6 +81,9 @@
     <EmbeddedResource Include="RegistrationForm.resx">
       <DependentUpon>RegistrationForm.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include=".github\workflows\ci.yml" />
+    <None Include="Documentation\ERD.md" />
+    <None Include="Documentation\MigrationPlan.md" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -92,6 +99,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Asset\logo.png" />
+    <Content Include="Database\Scripts\01_CreateSchema.sql" />
+    <Content Include="Database\Scripts\02_SeedData.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,6 +1,6 @@
-# Skills International School Management System
+<h1 style="text-align: center;">School Management System</h1>
 
-A Windows Forms (.NET Framework) application for managing student registrations at **Skills International** with a simple username/password based login.
+A Windows Forms (.NET Framework) application for managing student registrations at **Skills International** with a simple username/password-based login.
 
 The system persists data in a SQL Server database (`SkillInternationalDB`) using a small ADO.NET data-access layer, and is structured to be easy to understand and extend for learning or coursework.
 
@@ -200,6 +200,6 @@ Here are some ideas for future improvements:
 
 ---
 
-## License / Usage
+<img width="458" height="686" alt="Register" src="https://github.com/user-attachments/assets/9282afab-cadc-4ef5-bfa4-6e2f39c4ab09" />
+<img width="384" height="484" alt="Login" src="https://github.com/user-attachments/assets/57b27522-df6b-400a-aebc-56f00f5554aa" />
 
-This project is intended primarily as a learning and demonstration application. Use, modify, and extend it according to your own course or organisational requirements.
